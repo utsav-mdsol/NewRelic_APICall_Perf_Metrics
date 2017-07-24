@@ -29,7 +29,8 @@ namespace New_Relic_APIcall
         {
 
 
-            getTagName();
+
+            
 
 
             RunspaceConfiguration runspaceConfiguration = RunspaceConfiguration.Create();
@@ -49,16 +50,20 @@ namespace New_Relic_APIcall
 
             // pipeline.Commands.Add("Out-String");
 
-                                                var results = pipeline.Invoke();
+            var results = pipeline.Invoke();
             List<dynamic> lista = new List<dynamic>();
             foreach (var psobj in results)
             {
                 lista.Add(psobj);
             }
             
+
+
              runspace.Close();
-       //     RunScript();
-                         
+            //     RunScript();
+            appendEmptyColumn();
+            getTagName(lista);
+
         }
 
         private static string RunScript()
@@ -70,10 +75,10 @@ namespace New_Relic_APIcall
         }
 
         //Gets the tag names of the 1st column in the RAVEX reports
-        private static string getTagName()
+        private static string getTagName(List<dynamic> listOfMetrics)
         {
             //Spreadsheet ID for the google spreadsheet => form the URL link
-            string spreadsheetId = "1j1XYUFxnAuNN6Po0IyiMu5UWjAr2a1TrOQscfabtl-A";
+            string spreadsheetId = "11QWSoBvPXm6_4NQ9t1xomfTHJSHYtYKd0GQP_qNF6EU";
 
             //Range to look for the tag names
             string range = "RaveX June 2017 Incremental Perf Test Metrics!A:A";
@@ -94,12 +99,154 @@ namespace New_Relic_APIcall
 
             IList<IList<Object>> values = response.Values; //generic list to store the row name tags
 
+            string colRange = getColumnRange();
 
+            int rowIndex = 1;
+            
+                foreach (var rowTag in values)
+                {
+                string newrowTag = rowTag.ToString();
+                foreach (var tagName in listOfMetrics)
+                {
+                    string newtagName = tagName.ToString();
+                    if (!newrowTag.Equals(newtagName))
+                    {
 
-
+                    }
+                }
+            }
 
 
             return null;
+        }
+
+        private static string getColumnRange()
+        {
+            string spreadsheetId = "11QWSoBvPXm6_4NQ9t1xomfTHJSHYtYKd0GQP_qNF6EU";
+
+
+
+            string range = "RaveX June 2017 Incremental Perf Test Metrics!A:A";
+
+            SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "RaveReportAutomationUtility",
+            });
+
+
+            bool loop = true;
+            var startColNum = 1;
+            char rangeConcat = 'R';
+
+            do
+            {
+                string nullColumnIndexRange = "RaveX June 2017 Incremental Perf Test Metrics!"; //Range to be concatinated with
+                string rangeStr = rangeConcat.ToString();
+
+                string finalRange = string.Concat(nullColumnIndexRange, rangeStr, 1);//Concatinates the string to produce the range string for the right column to enter the data
+ 
+
+                string colData = getColumnData(finalRange);//Loops through the google docs sheet to find the 
+
+                if (colData.Equals("null found"))
+                {
+                    loop = false;
+
+                }
+                rangeConcat++;
+                startColNum++;
+
+            } while (loop == true);
+
+            return rangeConcat.ToString();
+        }
+
+        private static string getColumnData(string range)
+        {
+            // The ID of the spreadsheet to update.
+            string spreadsheetId = "11QWSoBvPXm6_4NQ9t1xomfTHJSHYtYKd0GQP_qNF6EU";  // TODO: Update placeholder value.
+
+            SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "RaveReportAutomationUtility",
+            });
+
+            SpreadsheetsResource.ValuesResource.GetRequest request =
+                   sheetsService.Spreadsheets.Values.Get(spreadsheetId, range);
+
+            Data.ValueRange response = request.Execute();
+            IList<IList<Object>> values = response.Values;
+
+            return nullTest(values);
+           
+
+        }
+
+        private static string nullTest(dynamic testVar)
+        {
+            
+            if (testVar == null)
+            {
+                return "null found";
+            }
+            else
+            {
+                string tagName = testVar.ToString();
+                return tagName ;
+            }
+        }
+
+        private static void appendEmptyColumn()
+        {
+
+            // The A1 notation of a range to search for a logical table of data.
+            // Values will be appended after the last row of the table.
+            //   string range = "1 - Performance Test Results";  // TODO: Update placeholder value.
+            //"'1 - Performance Test Results'!A:G"
+            // The ID of the spreadsheet to update.
+
+            // string spreadsheetId = spreadsheetIDTextbox.Text; //Impliment this for the input entered in the textbox
+
+            string spreadsheetId = "11QWSoBvPXm6_4NQ9t1xomfTHJSHYtYKd0GQP_qNF6EU";  // TODO: Update placeholder value.
+
+            SheetsService sheetsService = new SheetsService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = GetCredential(),
+                ApplicationName = "RaveReportAutomationUtility",
+            });
+
+            Data.Request reqBody = new Data.Request
+            {
+                AppendDimension = new Data.AppendDimensionRequest
+                {
+                    SheetId = 920811147,
+                    Dimension = "COLUMNS",
+                    Length = 1
+
+                }
+            };
+
+            List<Data.Request> requests = new List<Data.Request>();
+
+            requests.Add(reqBody);
+
+
+            // TODO: Assign values to desired properties of `requestBody`:
+            Data.BatchUpdateSpreadsheetRequest requestBody = new Data.BatchUpdateSpreadsheetRequest();
+            requestBody.Requests = requests;
+
+            SpreadsheetsResource.BatchUpdateRequest request = sheetsService.Spreadsheets.BatchUpdate(requestBody, spreadsheetId);
+            //SpreadsheetsResource.BatchUpdateRequest request = sheetsService.Spreadsheets.BatchUpdate(requestBody, spreadsheetId);
+
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Data.BatchUpdateSpreadsheetResponse response = request.Execute();
+          
+
+
+
         }
 
         private static UserCredential GetCredential()

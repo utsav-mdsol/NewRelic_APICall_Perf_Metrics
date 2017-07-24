@@ -4,7 +4,6 @@ C:\Users\udhungel\Documents\Visual Studio 2015\Projects\New_Relic_APIcall\New_Re
 C:\Users\udhungel\Documents\Visual Studio 2015\Projects\New_Relic_APIcall\New_Relic_APIcall\bin\Debug\New_Relic_APIcall.exe
 C:\Users\udhungel\Documents\Visual Studio 2015\Projects\New_Relic_APIcall\New_Relic_APIcall\bin\Debug\New_Relic_APIcall.pdb
 C:\Users\udhungel\Documents\Visual Studio 2015\Projects\New_Relic_APIcall\New_Relic_APIcall\bin\Debug\System.Management.Automation.dll
-C:\Users\udhungel\Documents\Visual Studio 2015\Projects\New_Relic_APIcall\New_Relic_APIcall\obj\Debug\New_Relic_APIcall.csprojResolveAssemblyReference.cache
 C:\Users\udhungel\Documents\Visual Studio 2015\Projects\New_Relic_APIcall\New_Relic_APIcall\obj\Debug\New_Relic_APIcall.exe
 C:\Users\udhungel\Documents\Visual Studio 2015\Projects\New_Relic_APIcall\New_Relic_APIcall\obj\Debug\New_Relic_APIcall.pdb
 C:\Users\udhungel\Documents\Visual Studio 2015\Projects\New_Relic_APIcall\New_Relic_APIcall\bin\Debug\Google.Apis.Auth.dll
